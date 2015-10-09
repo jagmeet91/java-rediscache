@@ -1,13 +1,12 @@
 ---
 declared-services: 
-  sample-java-cache-Redis: 
-    label: redis-2.6 
-    plan: 100 
+  sample-java-cache-MonitoringAndAnalytics:
+    label: MonitoringAndAnalytics
+    plan: Free	
   
 applications:
 - name: sample-java-cache
   memory: 512M  
   path: JavaCacheApp.war
   services:
-    - sample-java-cache-Redis
     - sample-java-cache-MonitoringAndAnalytics
