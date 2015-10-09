@@ -6,6 +6,7 @@ declared-services:
   sample-java-cache-MonitoringAndAnalytics:
     label: MonitoringAndAnalytics
     plan: Free
+	
 applications:
 - name: sample-java-cache
   memory: 512M
