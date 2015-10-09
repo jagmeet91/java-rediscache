@@ -13,6 +13,7 @@
     <path id="classpathDir">
         <pathelement location="bin"/>
 		<pathelement location="WebContent/WEB-INF/lib/JSON4J.jar"/>
+		<pathelement location="WebContent/WEB-INF/lib/jedis-2.7.3.jar"/>
     	<fileset dir="dep-jar"> 
             	<include name="*.jar"/> 
         	</fileset>

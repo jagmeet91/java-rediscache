@@ -47,7 +47,7 @@ public class ECacheConnection {
 		
  		String hostname = null;
 		String password = null;
-		String   port  = null;
+		Long port  =  null;
 
 		
 		Map<String, String> env = System.getenv();
@@ -62,18 +62,18 @@ public class ECacheConnection {
 				JSONObject obj = JSONObject.parse(vcap);
 				for (Iterator<?> iter = obj.keySet().iterator(); iter.hasNext();) {
 					String key = (String) iter.next();
-					System.out.printf("Found service: %s\n", key);
+					System.out.println("Found service: " + key);
 					if (key.startsWith("redis")) {
 						JSONArray val = (JSONArray)obj.get(key)!=null?(JSONArray)obj.get(key):null;
 						if(val!=null){
 							JSONObject serviceAttr = val.get(0)!=null?(JSONObject)val.get(0):null;
 							JSONObject credentials = serviceAttr!=null?(serviceAttr.get("credentials")!=null?(JSONObject)serviceAttr.get("credentials"):null):null;
 							
-							password =  (String) credentials.get("password") !=null?(String) credentials.get("hostname"):"";
-							hostname =  (String) credentials.get("hostname") !=null?(String) credentials.get("hostname"):"";
-							port = (String)  credentials.get("hostname") !=null?(String) credentials.get("port"):"";
+							password =  (String) credentials.get("password") !=null?(String) credentials.get("password"):"";
 							System.out.println("Found configured password: " + password);
+							hostname =  (String) credentials.get("hostname") !=null?(String) credentials.get("hostname"):"";
 							System.out.println("Found configured hostname: " + hostname);
+							port =   (Long)credentials.get("port") !=null? (Long)credentials.get("port"):new Long("0L"); 
 							System.out.println("Found configured port: " + port);
 							foundService = true;
 							break;
@@ -88,7 +88,9 @@ public class ECacheConnection {
 		}
 		try {
 			
-			jedis = new Jedis(hostname, new Integer(port).intValue());
+			jedis = new Jedis(hostname, port.intValue());
+			jedis.auth(password);
+			System.out.println("Connected to Redis");
 			
 		} catch (Exception e) {
 			System.out.println("Failed to connect to redis!");
@@ -159,12 +161,14 @@ public class ECacheConnection {
 	 */
 	public static List<ECache> getAllData() {		
 		keys = getAllKeys();
-		
-		return getECaches(keys);
+		if (keys == null)
+			return null;
+		else
+		    return getECaches(keys);
 	}
 
 	/**
-	 * Get all keys in mapName
+	 * Get all keys 
 	 * 
 	 * @param map
 	 * @return

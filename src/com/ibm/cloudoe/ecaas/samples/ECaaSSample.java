@@ -81,10 +81,19 @@ public class ECaaSSample extends HttpServlet {
 			} else if ("all".equals(operation)) {
 				// get all key/value
 				List<ECache> list = ECacheConnection.getAllData();
-				String res = list.toString();
-				response.getWriter().write(res);
-				System.out.println("all entries:" + res);
-				System.out.println("all entries size:" + list == null ? 0: list.size());
+				if (list != null) {
+					String res = list.toString();
+				    response.getWriter().write(res);
+					System.out.println("all entries:" + res);
+				    System.out.println("all entries size:" + list.size());
+				}
+				else {
+					response.getWriter().write("");
+					System.out.println("all entries:");
+			   	    System.out.println("all entries size:0");					
+				}
+				
+				
 			}
 		} catch (Exception e) {
 			System.out.println("Failed to perform operation on redis data.");
