@@ -7,6 +7,6 @@ Other than using Redis instead of the Bluemix Data Cache Service as the back end
 
 If deploying to Bluemix, note that the Redis  service is a community service from Cloud Foundry and is listed as *Experimental*. 
 
-[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy)
+[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy??repository=https://github.com/ibmecod/java-rediscache.git)
 
 
