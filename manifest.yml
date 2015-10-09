@@ -12,4 +12,4 @@ applications:
   path: JavaCacheApp.war
   services:
     - sample-java-MonitoringAndAnalytics
-	- sample-java-redis-2.6
+    - sample-java-redis-2.6
