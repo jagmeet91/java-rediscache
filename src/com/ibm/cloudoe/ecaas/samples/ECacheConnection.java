@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Iterator;
 
 
@@ -15,16 +16,13 @@ import redis.clients.jedis.Jedis;
 /**
  * Define the elastic caching Operation, mainly in order to program operation.
  * 
- * You can refer to the Elastic Caching Java Native API Specification
- * http://pic.dhe.ibm.com/infocenter/wdpxc/v2r5/index.jsp?topic=%2Fcom.ibm.websphere.datapower.xc.doc%2Fcxslibertyfeats.html
+ * 
  */
 public class ECacheConnection {
 
-	// define instance of Jedis
-	private static Jedis jedis;
 
-	// define temporary store grid entries keys
-	private static Set<String> keys;
+	// Holds the cache regardless of implementation 
+	private static ICache cache;
 
 	
 	static {
@@ -32,7 +30,7 @@ public class ECacheConnection {
 	}
 
 	/**
-	 * Initialize the session instance of ObjectGrid.
+	 * Initialize 
 	 */
 	public static void initECaaS() {
 		
@@ -84,18 +82,22 @@ public class ECacheConnection {
 			}
 		}
 		if (!foundService) {
-			System.out.println("Did not find redis service, using defaults");
+			System.out.println("Did not find redis service, using in memory cache");
+			cache = new MemoryCache(new HashMap<String, String>());
 		}
-		try {
+		else {
+		   try {
 			
-			jedis = new Jedis(hostname, port.intValue());
-			jedis.auth(password);
-			System.out.println("Connected to Redis");
+			   Jedis jedis = new Jedis(hostname, port.intValue());
+			   jedis.auth(password);
+			   cache = new RedisCache(jedis);
+			   System.out.println("Connected to Redis, using it as the cache");
 			
-		} catch (Exception e) {
-			System.out.println("Failed to connect to redis!");
-			e.printStackTrace();
-		}		 
+		   } catch (Exception e) {
+			   System.out.println("Failed to connect to redis!");
+		    	e.printStackTrace();
+		   }	
+        }		   
 	}
 	
 	private static String getAppName() {
@@ -119,13 +121,13 @@ public class ECacheConnection {
 	}
 
 	/**
-	 * Get value of this key in redis
+	 * Get value of this key 
 	 * 	
 	 * @param key
 	 * @return	
 	 */
 	public static String  getData(String key) {		
-		return jedis.get(key);
+		return cache.getData(key);
 	}
 
 	/**
@@ -138,18 +140,18 @@ public class ECacheConnection {
 	 */
 	public static void postData(String key, String newValue) {
 		
-		jedis.set(key, newValue);
+		cache.postData(key, newValue);
 		
 	}
 
 	/**
-	 * Delete this key/value in mapName
+	 * Delete this key/value 
 	 * 
 	 * @param key	
 	 */
 	public static void deleteData( String key) {
 		
-		jedis.del(key);
+		cache.deleteData(key);
 		
 	}
 
@@ -160,38 +162,9 @@ public class ECacheConnection {
 	 * @throws ObjectGridException
 	 */
 	public static List<ECache> getAllData() {		
-		keys = getAllKeys();
-		if (keys == null)
-			return null;
-		else
-		    return getECaches(keys);
-	}
-
-	/**
-	 * Get all keys 
-	 * 
-	 * @param map
-	 * @return
-	 */
-	public static Set<String> getAllKeys() {		
-		return jedis.keys("*");
-	}
-
 	
-
-	/**
-	 * Get all ECache Object
-	 * 
-	 * @param keys
-	 * @param values
-	 * @return
-	 */
-	public static List<ECache> getECaches(Set<String> keys) {
-		List<ECache> res = new ArrayList<ECache>();
-		for (String key : keys) {
-			res.add(new ECache(key, jedis.get(key)));
-		}
-		return res;
+	   return cache.getAllData();
 	}
+	
 
 }
