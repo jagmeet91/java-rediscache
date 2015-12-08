@@ -6,7 +6,7 @@
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
-    <condition property="ARCHIVE_DIR" value="${env.ARCHIVE_DIR}" else=".">
+    <condition property="ARCHIVE_DIR" value="${env.ARCHIVE_DIR}" else="./output/">
         <isset property="env.ARCHIVE_DIR" />
     </condition>
 	<property name="warname" value= "JavaCacheApp.war"/>
@@ -14,6 +14,7 @@
         <pathelement location="bin"/>
 		<pathelement location="WebContent/WEB-INF/lib/JSON4J.jar"/>
 		<pathelement location="WebContent/WEB-INF/lib/jedis-2.7.3.jar"/>
+    	<pathelement location="WebContent/WEB-INF/lib/cf-java-app-tracker-client-0.1.0.jar"/>
     	<fileset dir="dep-jar"> 
             	<include name="*.jar"/> 
         	</fileset>
@@ -25,6 +26,7 @@
     <target name="clean">
         <delete dir="bin"/>
 		<delete file="${ARCHIVE_DIR}/${warname}" />
+    	<delete dir="${ARCHIVE_DIR}" />
     </target>
     <target name="build" depends="build-project,build-war"/>
     <target name="cleanall" depends="clean"/>
