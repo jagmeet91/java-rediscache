@@ -1,11 +1,6 @@
----
-declared-services: 
-  sample-java-MonitoringAndAnalytics:
-    label: MonitoringAndAnalytics
-    plan: Free	  
+---	  
 applications:
 - name: sample-java-cache
   memory: 512M  
   path: JavaCacheApp.war
-  services:
-    - sample-java-MonitoringAndAnalytics
+ 
