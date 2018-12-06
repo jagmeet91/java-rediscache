@@ -1,6 +1,6 @@
 ---	  
 applications:
 - name: sample-java-cache
-  memory: 512M  
+  memory: 128M  
   path: JavaCacheApp.war
  
